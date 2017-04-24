@@ -1,0 +1,18 @@
+<import: src="./home">
+<import: src="./card">
+
+<Title:>
+  Embed.rocks example app
+
+<Head:>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="/img/128.png" rel="icon">
+
+<Body:>
+  <view name="k-connection-alert"></view>
+  <view name="k-before-unload"></view>
+  <div class="main-panel">
+    <view name="{{$render.ns}}" as="main"></view>
+  </div>
+

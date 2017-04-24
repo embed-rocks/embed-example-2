@@ -1,0 +1,23 @@
+{
+  "name": "embed-example",
+  "version": "1.0.0",
+  "dependencies": {
+    "coffee-script": "*",
+    "coffeeify": "*",
+    "express": "*",
+    "iframe-resizer": "*",
+    "k-before-unload": "*",
+    "k-bundle": "*",
+    "k-client": "*",
+    "k-connection-alert": "*",
+    "k-highway": "*",
+    "k-model": "*",
+    "k-stylus": "*",
+    "linkify-it": "*",
+    "nib": "*",
+    "whatwg-fetch": "^2.0.3"
+  },
+  "scripts": {
+    "start": "./node_modules/.bin/coffee server.coffee"
+  }
+}

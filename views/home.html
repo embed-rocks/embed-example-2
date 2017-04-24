@@ -1,0 +1,25 @@
+<index:>
+    <div>
+        <h1 class="center m-100">Embed.rocks example app</h1>
+        <form class="try-it">
+            <h2>Paste a link below:</h2>
+            <input as="input" type="text" name="" value="{{text}}" class="pure-u-1" autofocus onfocus="this.select()">
+        </form>
+        <br>
+        {{if error}}
+        <p class="error">{{error}}</p>
+        {{/}}
+        {{if card === 'fetch'}}
+          <div class="linkpv linkpv-fetch">
+          <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> fetching...
+          </div>
+        {{else if card}}
+          <div class="linkpv">
+            <view is="card" item="{{card}}" big="1"></view>      
+          </div>
+          <pre>
+              {{JSON.stringify(json, null, 2)}}
+          </pre>
+        {{/}}
+    </div>
+

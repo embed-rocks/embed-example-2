@@ -1,0 +1,112 @@
+<index:>
+  {{if item}}
+    <div class="card{{if big}} card-big{{/}}">
+      {{if item.type == 'error'}}
+        <p class="error error-bg">{{item.error}}</p>
+      {{else if play}}
+        <player></player>
+      {{else if preferOembedInIframe()}}
+        <oembed-iframe></oembed-iframe>
+      {{else if preferOembedStraight()}}
+        <oembed-straight></oembed-straight>
+      {{else if (item.type == 'photo' && item.images.length) }}
+        <im image="{{item.images[0]}}"></im>
+      {{else if (item.oembed.type == 'photo' && item.oembed.images.length) }}
+        <im image="{{item.oembed.images[0]}}"></im>
+      {{else if item.type == 'audio'}}
+        <aud></aud>
+      {{else if item.type == 'rich'}}
+        <rich></rich>
+      {{else if item.type == 'video'}}
+        <vid></vid>
+      {{/}}
+    </div>
+  {{/}}
+
+<oembed-iframe: tag="oembed-iframe">
+  <iframe src="/oembed/{{encodeURIComponent(item.url)}}"></iframe>
+
+<oembed-straight: tag="oembed-straight">
+  {{unescaped item.oembed.html}}
+
+<rich: tag="rich">
+  <a target="_blank" href="{{item.url}}">
+    {{if (item.images.length)}}
+      <im image="{{item.images[0]}}" />
+    {{/}}
+    <text />
+  </a>
+
+<vid: tag="vid">
+  {{if (item.images.length)}}
+    <span class="vplay" on-click="play()">
+      <im image="{{item.images[0]}}" />
+      <btn />
+    </span>
+    <a target="_blank" href="{{item.url}}">
+      <text />
+    </a>
+  {{else if html5Video()}}
+    <video-html5 />
+  {{else}}
+    <video-iframe />
+  {{/}}
+
+<text: tag="text">
+  {{if !play}}
+    <div class="card-text">
+      <h3>{{item.title}}</h3>
+      {{if item.author || item.published_date}}
+      <p class="author">{{if item.author}}{{item.author}}{{/}} {{if item.published_date}}{{publishedDate(item.published_date)}}{{/}}</p>
+      {{/}}
+      <p>{{item.description}}</p>
+      {{if item.favicon.safe || item.site}}
+        <p class="fav">{{if item.favicon.safe}}<img onerror="this.src='/img/broken.jpg'" class="favicon" src="//safe.chttr.co/{{item.favicon.safe}}">{{/}}{{item.site}}</p>
+      {{/}}
+    </div>
+  {{/}}
+
+<player: tag="player">
+  <div on-click="stop()" class="dl-container">
+    {{if html5Video()}}
+      <video-html5-player />
+    {{else if iframeVideo()}}
+      <video-iframe />
+    {{/}}
+    <i on-click="stop()" class="viewer-close fa fa-times-circle"></i>
+  </div>
+
+<video-iframe: tag="video-iframe">
+  <iframe style="{{videoSize()}}" src="{{item.videos[0].secureUrl || item.videos[0].url}}"></iframe>
+  <text />
+
+<video-html5-player: tag="video-html5-player">
+  <video controls loop autoplay>
+    <source type="{{item.videos[0].type}}" src="{{item.videos[0].secureUrl || item.videos[0].url}}">
+  </video>
+
+<video-html5: tag="video-html5">
+  <span class="vplay" on-click="play()">
+    <video class="{{if big}}big{{/}}">
+      <source type="{{item.videos[0].type}}" src="{{item.videos[0].secureUrl || item.videos[0].url}}">
+    </video>
+    <btn />
+  </span>
+  <text />
+
+<aud: tag="aud">
+  <audio controls loop>
+    <source type="{{item.audios[0].type}}" src="{{item.audios[0].secureUrl || item.audios[0].url}}">
+  </audio>
+
+<im: tag="im">
+  {{if @image.safe}}
+    <img onerror="this.src='/img/broken.jpg'" class="card-image" src="//safe.chttr.co/{{@image.safe}}">
+  {{else}}
+    <img onerror="this.src='/img/broken.jpg'" class="card-image" src="{{@image.url}}">
+  {{/}}
+
+<btn: tag="btn">
+  <span class="btn">
+    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><circle cx="25" cy="25" r="25" stroke-width="6" transform="translate(3 3)" stroke="#ffffff" fill="rgba(0, 0, 0, 0.3)"></circle><path d="M54,79V48L78,64Z" transform="translate(-34 -36)" stroke-width="0" stroke="#ffffff" fill="#ffffff"></path></svg>
+  </span>
