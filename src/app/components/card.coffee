@@ -1,8 +1,24 @@
 app = require '../index'
 
-class Card
+COMBINED_MAX_LENGTH_FOR_SMALL_CARD = 180
 
-	create: -> window.iFrameResize({ checkOrigin: false })
+oembedSites = [
+	'facebook.com',
+	'twitter.com',
+	'airtable.com',
+	'mathembed.com',
+	'soundcloud.com'
+]
+
+trim = (description, len) ->
+	if description.length > len
+		description = description.substring(0, len)
+		description = description.substring(0, description.lastIndexOf(' ')) + '...'
+
+	description = description.trim()
+	description
+
+class Card
 
 	html5Video: ->
 		item = @model.get 'item'
@@ -27,13 +43,14 @@ class Card
 
 		''
 		
-	preferOembedInIframe: ->
-		item = @model.get 'item'
-		item?.oembed?.type is 'rich' and item?.url.match(/facebook\.com|twitter\.com/i)
+	preferOembed: ->
+		toRegExp = (arr) -> new RegExp("^https?:\/\/(?:www\.)?" + arr.map((el) -> "(?:#{el})"  ).join('|') + "$", 'i')
 
-	preferOembedStraight: ->
+		return false if @model.get('small')
+
 		item = @model.get 'item'
-		item?.oembed?.type is 'rich' and item?.url.match(/airtable\.com|mathembed\.com|soundcloud\.com/i)
+		#item?.oembed?.type is 'rich' and item?.url.match(/^https?:\/\/(?:www\.)?(?:airtable\.com|mathembed\.com|soundcloud\.com)/i)
+		item?.oembed?.type is 'rich' and item?.url.match(toRegExp(oembedSites))
 
 	showArticle: (ms) ->
 		clearTimeout @timer
@@ -58,6 +75,17 @@ class Card
 		item = @model.get 'item'
 		item?.title and item?.description
 
+	descriptionForSmallCard: (item) ->
+
+		if item
+			l = item.title?.length + item.description?.length - COMBINED_MAX_LENGTH_FOR_SMALL_CARD
+			if l > 0
+			  description = trim(item.description, item.description.length - l)
+
+			description or item.description
+		else
+			''
+
 	keydown: (e) =>
 		key = e.keyCode or e.which
 		if key is 27
@@ -76,5 +104,17 @@ class Card
 			w = '90vw'
 			h = if isFixedHeightVideo then height +'px' else "#{90 / ratio}vw"
 		{ w, h }
+
+	dimensions: (image) ->
+		small = @model.get 'small'
+
+		if small
+			h = 125
+			w = 125 * (image.width / image.height)
+		else
+			w = 750
+			h = (750 * image.height) / image.width
+
+		"width: #{w}px; height: #{h}px"
 
 app.component 'card', Card

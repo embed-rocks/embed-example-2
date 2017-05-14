@@ -13,6 +13,7 @@ class Home
 		@timer = setTimeout @getpreview, 1000
 
 	setresult: (ex, json) =>
+		console.log 'setresult', ex, json
 		if ex or json.error
 			@model.set('error', ex or json.error)
 			@model.del('card')
@@ -37,7 +38,7 @@ class Home
 			window.fetch("/api?url=#{encodeURIComponent(url)}")
 				.then((response) -> response.json())
 				.then((json) -> self.setresult null, json)
-				.catch((ex) -> self.setresult ex, json)
+				.catch((ex) -> self.setresult ex, null)
 
 
 

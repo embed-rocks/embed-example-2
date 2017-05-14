@@ -6,20 +6,34 @@
             <input as="input" type="text" name="" value="{{text}}" class="pure-u-1" autofocus onfocus="this.select()">
         </form>
         <br>
-        {{if error}}
-        <p class="error">{{error}}</p>
+        {{if card}}
+          {{if card === 'fetch'}}
+            <div class="linkpv linkpv-fetch">
+              <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> fetching...
+            </div>
+          {{else}}
+            {{if card.images[0].width > 250}}
+              <h3>As bigger:</h3>
+              <div class="linkpv">
+                <view is="card" item="{{card}}"></view>      
+              </div>
+              <h3>As smaller:</h3>
+              <div class="linkpv">
+                <view is="card" item="{{card}}" small="1"></view>      
+              </div>
+            {{else}}
+              <div class="linkpv">
+                <view is="card" item="{{card}}"></view>      
+              </div>
+            {{/}}
+          {{/}}
         {{/}}
-        {{if card === 'fetch'}}
-          <div class="linkpv linkpv-fetch">
-          <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> fetching...
-          </div>
-        {{else if card}}
-          <div class="linkpv">
-            <view is="card" item="{{card}}" big="1"></view>      
-          </div>
-          <pre>
-              {{JSON.stringify(json, null, 2)}}
+
+        {{if card.type}}
+          <pre style="max-height: 300px">
+          {{JSON.stringify(card, null, 2)}}
           </pre>
         {{/}}
+
     </div>
 

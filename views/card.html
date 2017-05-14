@@ -1,13 +1,21 @@
 <index:>
+  <script type="text/javascript">
+  function showImage(image) { 
+    if (image.classList) {
+      setTimeout(function() { image.classList.add('show') }, 0);
+    }
+    else {
+      setTimeout(function() { image.className += ' show' }, 10);
+    }
+   }
+  </script>
   {{if item}}
-    <div class="card{{if big}} card-big{{/}}">
+    <div class="card {{if small || item.images[0].width < 150}}card-small{{else}}card-big{{/}} {{if preferOembed()}}card-iframe{{/}} {{if html5Video()}}card-html5-video{{/}} card-{{item.type}}">
       {{if item.type == 'error'}}
-        <p class="error error-bg">{{item.error}}</p>
+        <p class="error error-bg">{{item.msg || item.error.code || item.error.errno}}</p>
       {{else if play}}
         <player></player>
-      {{else if preferOembedInIframe()}}
-        <oembed-iframe></oembed-iframe>
-      {{else if preferOembedStraight()}}
+      {{else if preferOembed()}}
         <oembed-straight></oembed-straight>
       {{else if (item.type == 'photo' && item.images.length) }}
         <im image="{{item.images[0]}}"></im>
@@ -22,9 +30,6 @@
       {{/}}
     </div>
   {{/}}
-
-<oembed-iframe: tag="oembed-iframe">
-  <iframe src="/oembed/{{encodeURIComponent(item.url)}}"></iframe>
 
 <oembed-straight: tag="oembed-straight">
   {{unescaped item.oembed.html}}
@@ -56,12 +61,16 @@
   {{if !play}}
     <div class="card-text">
       <h3>{{item.title}}</h3>
-      {{if item.author || item.published_date}}
+      {{if !small}}
       <p class="author">{{if item.author}}{{item.author}}{{/}} {{if item.published_date}}{{publishedDate(item.published_date)}}{{/}}</p>
       {{/}}
-      <p>{{item.description}}</p>
+      <p>{{small && descriptionForSmallCard(item) || item.description}}</p>
       {{if item.favicon.safe || item.site}}
-        <p class="fav">{{if item.favicon.safe}}<img onerror="this.src='/img/broken.jpg'" class="favicon" src="//safe.chttr.co/{{item.favicon.safe}}">{{/}}{{item.site}}</p>
+        {{if item.favicon.safe}}
+          <p class="fav">{{if item.favicon.safe}}<img onerror="this.src='/img/broken.jpg'" class="favicon" src="https://safe.chttr.co/{{item.favicon.safe}}">{{/}}{{item.site}}</p>
+        {{else}}
+          <p class="fav">{{if item.favicon.url}}<img onerror="this.src='/img/broken.jpg'" class="favicon" src="{{item.favicon.url}}">{{/}}{{item.site}}</p>
+        {{/}}
       {{/}}
     </div>
   {{/}}
@@ -101,9 +110,9 @@
 
 <im: tag="im">
   {{if @image.safe}}
-    <img onerror="this.src='/img/broken.jpg'" class="card-image" src="//safe.chttr.co/{{@image.safe}}">
+    <img onerror="this.src='/img/broken.jpg'" onload="showImage(this)" class="card-image" style="{{dimensions(@image)}}" src="https://safe.chttr.co/{{@image.safe}}">
   {{else}}
-    <img onerror="this.src='/img/broken.jpg'" class="card-image" src="{{@image.url}}">
+    <img onerror="this.src='/img/broken.jpg'" onload="showImage(this)" class="card-image" style="{{dimensions(@image)}}" src="{{@image.url}}">
   {{/}}
 
 <btn: tag="btn">
