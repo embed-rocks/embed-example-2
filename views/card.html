@@ -16,7 +16,7 @@
       {{else if play}}
         <player></player>
       {{else if preferOembed()}}
-        <oembed-straight></oembed-straight>
+        <oembed></oembed>
       {{else if (item.type == 'photo' && item.images.length) }}
         <im image="{{item.images[0]}}"></im>
       {{else if (item.oembed.type == 'photo' && item.oembed.images.length) }}
@@ -31,7 +31,7 @@
     </div>
   {{/}}
 
-<oembed-straight: tag="oembed-straight">
+<oembed: tag="oembed">
   {{unescaped item.oembed.html}}
 
 <rich: tag="rich">
